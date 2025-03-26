@@ -15,13 +15,12 @@ export default function Table() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [page, setPage] = useState(1);
 
-  // State untuk form input
+  // State untuk modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
   });
-
-  // State untuk edit user
   const [editingUserId, setEditingUserId] = useState<number | null>(null);
 
   const pageSize = 5;
@@ -81,7 +80,6 @@ export default function Table() {
         user.id === editingUserId ? { ...user, ...newUser } : user
       );
       setUsers(updatedUsers);
-      setEditingUserId(null);
     } else {
       // Add new user
       const newId = users.length > 0 ? Math.max(...users.map((user) => user.id)) + 1 : 1;
@@ -89,7 +87,10 @@ export default function Table() {
       setUsers((prevUsers) => [...prevUsers, newUserToAdd]);
     }
 
-    setNewUser({ name: "", email: "" }); // Reset form
+    // Reset form and close modal
+    setNewUser({ name: "", email: "" });
+    setEditingUserId(null);
+    setIsModalOpen(false);
   };
 
   // Handle editing a user
@@ -98,6 +99,7 @@ export default function Table() {
     if (userToEdit) {
       setNewUser(userToEdit);
       setEditingUserId(id);
+      setIsModalOpen(true);
     }
   };
 
@@ -109,52 +111,36 @@ export default function Table() {
     }
   };
 
+  // Open modal for new user
+  const openNewUserModal = () => {
+    setNewUser({ name: "", email: "" });
+    setEditingUserId(null);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="p-6">
-      {/* Form for adding/editing user */}
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">
-          {editingUserId !== null ? "Edit Pengguna" : "Tambah Pengguna"}
-        </h2>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            placeholder="Nama"
-            value={newUser.name}
-            onChange={(e) =>
-              setNewUser({ ...newUser, name: e.target.value })
-            }
-            className="p-2 border rounded w-full"
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={newUser.email}
-            onChange={(e) =>
-              setNewUser({ ...newUser, email: e.target.value })
-            }
-            className="p-2 border rounded w-full"
-          />
-          <button
-            onClick={handleSaveUser}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-          >
-            {editingUserId !== null ? "Simpan Perubahan" : "Tambah"}
-          </button>
-        </div>
-      </div>
+      <h1 className="text-3xl font-bold mb-6">DAFTAR USER</h1>
 
-      {/* Search bar */}
-      <input
-        type="text"
-        placeholder="Cari nama atau email..."
-        value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
-          setPage(1);
-        }}
-        className="mb-4 p-2 border rounded w-full"
-      />
+      {/* Search bar and Add User button */}
+      <div className="flex justify-between mb-4">
+        <input
+          type="text"
+          placeholder="Cari nama atau email..."
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
+          className="p-2 border rounded w-1/2"
+        />
+        <button
+          onClick={openNewUserModal}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          Tambah User
+        </button>
+      </div>
 
       {/* Table */}
       <table className="w-full border-collapse border">
@@ -229,6 +215,63 @@ export default function Table() {
           Next
         </button>
       </div>
+
+      {/* Modal for Add/Edit User */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-semibold mb-4">
+              {editingUserId !== null ? "Edit Pengguna" : "Tambah Pengguna"}
+            </h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block mb-1">Nama</label>
+                <input
+                  type="text"
+                  placeholder="Nama"
+                  value={newUser.name}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, name: e.target.value })
+                  }
+                  className="p-2 border rounded w-full"
+                />
+              </div>
+              
+              <div>
+                <label className="block mb-1">Email</label>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={newUser.email}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, email: e.target.value })
+                  }
+                  className="p-2 border rounded w-full"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 mt-6">
+              <button
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setEditingUserId(null);
+                }}
+                className="px-4 py-2 bg-gray-300 rounded"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleSaveUser}
+                className="px-4 py-2 bg-blue-500 text-white rounded"
+              >
+                {editingUserId !== null ? "Simpan Perubahan" : "Tambah"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

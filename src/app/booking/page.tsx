@@ -13,16 +13,13 @@ export default function BookingPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
-
-  // State untuk form input
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [newBooking, setNewBooking] = useState({
     room: "",
     user: "",
     date: "",
-    status: "Pending", // Default status
+    status: "Pending",
   });
-
-  // State untuk edit booking
   const [editingBookingId, setEditingBookingId] = useState<number | null>(null);
 
   // Fetch data from bookings.json
@@ -64,7 +61,6 @@ export default function BookingPage() {
         booking.id === editingBookingId ? { ...booking, ...newBooking } : booking
       );
       setBookings(updatedBookings);
-      setEditingBookingId(null);
     } else {
       // Add new booking
       const newId = bookings.length > 0 ? Math.max(...bookings.map((b) => b.id)) + 1 : 1;
@@ -72,7 +68,10 @@ export default function BookingPage() {
       setBookings((prevBookings) => [...prevBookings, newBookingToAdd]);
     }
 
-    setNewBooking({ room: "", user: "", date: "", status: "Pending" }); // Reset form
+    // Reset form and close modal
+    setNewBooking({ room: "", user: "", date: "", status: "Pending" });
+    setEditingBookingId(null);
+    setIsModalOpen(false);
   };
 
   // Handle editing a booking
@@ -81,6 +80,7 @@ export default function BookingPage() {
     if (bookingToEdit) {
       setNewBooking(bookingToEdit);
       setEditingBookingId(id);
+      setIsModalOpen(true);
     }
   };
 
@@ -92,60 +92,23 @@ export default function BookingPage() {
     }
   };
 
+  // Open modal for new booking
+  const openNewBookingModal = () => {
+    setNewBooking({ room: "", user: "", date: "", status: "Pending" });
+    setEditingBookingId(null);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
       {/* Header */}
-      <h1 className="text-3xl font-bold mb-6">Booking List</h1>
-
-      {/* Form for adding/editing booking */}
-      <div className="mb-6 bg-white p-4 shadow rounded-lg">
-        <h2 className="text-lg font-semibold mb-4">
-          {editingBookingId !== null ? "Edit Booking" : "Tambah Booking Baru"}
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            type="text"
-            placeholder="Nama Ruangan"
-            value={newBooking.room}
-            onChange={(e) =>
-              setNewBooking({ ...newBooking, room: e.target.value })
-            }
-            className="p-2 border border-gray-300 rounded"
-          />
-          <input
-            type="text"
-            placeholder="Nama Pengguna"
-            value={newBooking.user}
-            onChange={(e) =>
-              setNewBooking({ ...newBooking, user: e.target.value })
-            }
-            className="p-2 border border-gray-300 rounded"
-          />
-          <input
-            type="date"
-            value={newBooking.date}
-            onChange={(e) =>
-              setNewBooking({ ...newBooking, date: e.target.value })
-            }
-            className="p-2 border border-gray-300 rounded"
-          />
-          <select
-            value={newBooking.status}
-            onChange={(e) =>
-              setNewBooking({ ...newBooking, status: e.target.value })
-            }
-            className="p-2 border border-gray-300 rounded"
-          >
-            <option value="Pending">Pending</option>
-            <option value="Confirmed">Confirmed</option>
-            <option value="Cancelled">Cancelled</option>
-          </select>
-        </div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Booking List</h1>
         <button
-          onClick={handleSaveBooking}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+          onClick={openNewBookingModal}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
         >
-          {editingBookingId !== null ? "Simpan Perubahan" : "Tambah Booking"}
+          Tambah Booking
         </button>
       </div>
 
@@ -175,34 +138,19 @@ export default function BookingPage() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Room
               </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 User
               </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Date
               </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
               </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-              >
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Aksi
               </th>
             </tr>
@@ -237,13 +185,13 @@ export default function BookingPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEditBooking(booking.id)}
-                        className="px-3 py-1 bg-yellow-500 text-white rounded"
+                        className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDeleteBooking(booking.id)}
-                        className="px-3 py-1 bg-red-500 text-white rounded"
+                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
                       >
                         Hapus
                       </button>
@@ -261,6 +209,90 @@ export default function BookingPage() {
           </tbody>
         </table>
       </div>
+
+      {/* Modal for Add/Edit Booking */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-semibold mb-4">
+              {editingBookingId !== null ? "Edit Booking" : "Tambah Booking Baru"}
+            </h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block mb-1">Nama Ruangan</label>
+                <input
+                  type="text"
+                  placeholder="Nama Ruangan"
+                  value={newBooking.room}
+                  onChange={(e) =>
+                    setNewBooking({ ...newBooking, room: e.target.value })
+                  }
+                  className="p-2 border border-gray-300 rounded w-full"
+                />
+              </div>
+              
+              <div>
+                <label className="block mb-1">Nama Pengguna</label>
+                <input
+                  type="text"
+                  placeholder="Nama Pengguna"
+                  value={newBooking.user}
+                  onChange={(e) =>
+                    setNewBooking({ ...newBooking, user: e.target.value })
+                  }
+                  className="p-2 border border-gray-300 rounded w-full"
+                />
+              </div>
+              
+              <div>
+                <label className="block mb-1">Tanggal</label>
+                <input
+                  type="date"
+                  value={newBooking.date}
+                  onChange={(e) =>
+                    setNewBooking({ ...newBooking, date: e.target.value })
+                  }
+                  className="p-2 border border-gray-300 rounded w-full"
+                />
+              </div>
+              
+              <div>
+                <label className="block mb-1">Status</label>
+                <select
+                  value={newBooking.status}
+                  onChange={(e) =>
+                    setNewBooking({ ...newBooking, status: e.target.value })
+                  }
+                  className="p-2 border border-gray-300 rounded w-full"
+                >
+                  <option value="Pending">Pending</option>
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 mt-6">
+              <button
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setEditingBookingId(null);
+                }}
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition-colors"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleSaveBooking}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              >
+                {editingBookingId !== null ? "Simpan Perubahan" : "Tambah Booking"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

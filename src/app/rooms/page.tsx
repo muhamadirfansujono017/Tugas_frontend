@@ -20,18 +20,19 @@ export default function RoomPage() {
     available: true,
   });
   const [editingRoomId, setEditingRoomId] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Fetch data from rooms.json
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        console.log("Fetching rooms from /rooms.json"); // Debugging
+        console.log("Fetching rooms from /rooms.json");
         const response = await fetch("/rooms.json");
         if (!response.ok) {
           throw new Error("Failed to fetch rooms");
         }
         const data: Room[] = await response.json();
-        console.log("Fetched rooms:", data); // Debugging
+        console.log("Fetched rooms:", data);
         setRooms(data);
       } catch (error) {
         console.error("Error fetching rooms:", error);
@@ -60,7 +61,6 @@ export default function RoomPage() {
         room.id === editingRoomId ? { ...room, ...newRoom } : room
       );
       setRooms(updatedRooms);
-      setEditingRoomId(null);
     } else {
       // Add new room
       const newId = rooms.length > 0 ? Math.max(...rooms.map((r) => r.id)) + 1 : 1;
@@ -68,7 +68,10 @@ export default function RoomPage() {
       setRooms((prevRooms) => [...prevRooms, newRoomToAdd]);
     }
 
-    setNewRoom({ name: "", description: "", capacity: 0, available: true }); // Reset form
+    // Reset form and close modal
+    setNewRoom({ name: "", description: "", capacity: 0, available: true });
+    setEditingRoomId(null);
+    setIsModalOpen(false);
   };
 
   // Handle editing a room
@@ -77,6 +80,7 @@ export default function RoomPage() {
     if (roomToEdit) {
       setNewRoom(roomToEdit);
       setEditingRoomId(id);
+      setIsModalOpen(true);
     }
   };
 
@@ -88,61 +92,23 @@ export default function RoomPage() {
     }
   };
 
+  // Open modal for new room
+  const openNewRoomModal = () => {
+    setNewRoom({ name: "", description: "", capacity: 0, available: true });
+    setEditingRoomId(null);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
       {/* Header */}
-      <h1 className="text-3xl font-bold mb-6">Room List</h1>
-
-      {/* Form for adding/editing a room */}
-      <div className="mb-6 bg-white p-4 shadow rounded-lg">
-        <h2 className="text-lg font-semibold mb-4">
-          {editingRoomId !== null ? "Edit Ruangan" : "Tambah Ruangan Baru"}
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            type="text"
-            placeholder="Nama Ruangan"
-            value={newRoom.name}
-            onChange={(e) =>
-              setNewRoom({ ...newRoom, name: e.target.value })
-            }
-            className="p-2 border border-gray-300 rounded"
-          />
-          <input
-            type="text"
-            placeholder="Deskripsi"
-            value={newRoom.description}
-            onChange={(e) =>
-              setNewRoom({ ...newRoom, description: e.target.value })
-            }
-            className="p-2 border border-gray-300 rounded"
-          />
-          <input
-            type="number"
-            placeholder="Kapasitas"
-            value={newRoom.capacity}
-            onChange={(e) =>
-              setNewRoom({ ...newRoom, capacity: parseInt(e.target.value) || 0 })
-            }
-            className="p-2 border border-gray-300 rounded"
-          />
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={newRoom.available}
-              onChange={(e) =>
-                setNewRoom({ ...newRoom, available: e.target.checked })
-              }
-              className="form-checkbox"
-            />
-            Available
-          </label>
-        </div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Room List</h1>
         <button
-          onClick={handleSaveRoom}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+          onClick={openNewRoomModal}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
         >
-          {editingRoomId !== null ? "Simpan Perubahan" : "Tambah Ruangan"}
+          Tambah Ruangan
         </button>
       </div>
 
@@ -213,6 +179,88 @@ export default function RoomPage() {
           <p>No rooms found.</p>
         )}
       </div>
+
+      {/* Modal for Add/Edit Room */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-semibold mb-4">
+              {editingRoomId !== null ? "Edit Ruangan" : "Tambah Ruangan Baru"}
+            </h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block mb-1">Nama Ruangan</label>
+                <input
+                  type="text"
+                  placeholder="Nama Ruangan"
+                  value={newRoom.name}
+                  onChange={(e) =>
+                    setNewRoom({ ...newRoom, name: e.target.value })
+                  }
+                  className="p-2 border border-gray-300 rounded w-full"
+                />
+              </div>
+              
+              <div>
+                <label className="block mb-1">Deskripsi</label>
+                <input
+                  type="text"
+                  placeholder="Deskripsi"
+                  value={newRoom.description}
+                  onChange={(e) =>
+                    setNewRoom({ ...newRoom, description: e.target.value })
+                  }
+                  className="p-2 border border-gray-300 rounded w-full"
+                />
+              </div>
+              
+              <div>
+                <label className="block mb-1">Kapasitas</label>
+                <input
+                  type="number"
+                  placeholder="Kapasitas"
+                  value={newRoom.capacity}
+                  onChange={(e) =>
+                    setNewRoom({ ...newRoom, capacity: parseInt(e.target.value) || 0 })
+                  }
+                  className="p-2 border border-gray-300 rounded w-full"
+                />
+              </div>
+              
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={newRoom.available}
+                  onChange={(e) =>
+                    setNewRoom({ ...newRoom, available: e.target.checked })
+                  }
+                  className="form-checkbox"
+                />
+                Available
+              </label>
+            </div>
+
+            <div className="flex justify-end gap-2 mt-6">
+              <button
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setEditingRoomId(null);
+                }}
+                className="px-4 py-2 bg-gray-300 rounded"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleSaveRoom}
+                className="px-4 py-2 bg-blue-500 text-white rounded"
+              >
+                {editingRoomId !== null ? "Simpan Perubahan" : "Tambah"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
