@@ -1,298 +1,144 @@
-'use client';
-import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+"use client";
+import Link from "next/link";
 
-const Dashboard = () => {
-  // Data dummy untuk grafik
-  const bookingByRoomData = [
-    { name: 'Room A', bookings: 40 },
-    { name: 'Room B', bookings: 30 },
-    { name: 'Room C', bookings: 20 },
-    { name: 'Room D', bookings: 10 },
-  ];
-
-  const bookingByMonthData = [
-    { name: 'Jan', bookings: 10 },
-    { name: 'Feb', bookings: 20 },
-    { name: 'Mar', bookings: 30 },
-    { name: 'Apr', bookings: 40 },
-    { name: 'May', bookings: 50 },
-    { name: 'Jun', bookings: 60 },
-  ];
-
-  const bookingByYearData = [
-    { name: '2021', bookings: 100 },
-    { name: '2022', bookings: 200 },
-    { name: '2023', bookings: 300 },
-  ];
-
+export default function LandingPage() {
   return (
-    <div className="bg-gray-100 min-h-screen">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+      {/* Navbar */}
+      <nav className="bg-white shadow-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
+          <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-600">
+            Sistem Manajemen Ruangan
+          </h1>
+          <div className="flex items-center gap-4">
+            <Link href="/login">
+              <button className="px-5 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full hover:from-indigo-600 hover:to-purple-600 transition-all shadow-md">
+                Masuk
+              </button>
+            </Link>
+            <Link href="/register">
+              <button className="px-5 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full hover:from-pink-600 hover:to-rose-600 transition-all shadow-md">
+                Daftar
+              </button>
+            </Link>
+          </div>
         </div>
-      </header>
+      </nav>
 
-      {/* Main Content */}
-      <main>
-        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          {/* Cards Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-            {/* Card 1 */}
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="px-4 py-5 sm:p-6">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0 bg-indigo-500 rounded-full p-3">
-                    <svg
-                      className="h-6 w-6 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                      />
-                    </svg>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Total Rooms</dt>
-                      <dd className="flex items-baseline">
-                        <div className="text-2xl font-semibold text-gray-900">25</div>
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 2 */}
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="px-4 py-5 sm:p-6">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0 bg-green-500 rounded-full p-3">
-                    <svg
-                      className="h-6 w-6 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Bookings</dt>
-                      <dd className="flex items-baseline">
-                        <div className="text-2xl font-semibold text-gray-900">45</div>
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 3 */}
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="px-4 py-5 sm:p-6">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0 bg-red-500 rounded-full p-3">
-                    <svg
-                      className="h-6 w-6 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Pending Requests</dt>
-                      <dd className="flex items-baseline">
-                        <div className="text-2xl font-semibold text-gray-900">12</div>
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 4 */}
-            <div className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="px-4 py-5 sm:p-6">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0 bg-yellow-500 rounded-full p-3">
-                    <svg
-                      className="h-6 w-6 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0h6"
-                      />
-                    </svg>
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">Active Users</dt>
-                      <dd className="flex items-baseline">
-                        <div className="text-2xl font-semibold text-gray-900">50</div>
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* Hero Section */}
+      <section className="py-16 bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-pink-700 mb-6">
+            Selamat Datang di Sistem Manajemen Ruangan
+          </h2>
+          <p className="text-lg text-gray-600 mb-10 max-w-3xl mx-auto">
+            Kelola ruangan, booking, dan laporan dengan mudah dalam satu platform terintegrasi.
+          </p>
+          <div className="flex justify-center gap-6">
+            <Link href="/rooms">
+              <button className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all font-medium">
+                Kelola Ruangan
+              </button>
+            </Link>
+            <Link href="/bookings">
+              <button className="px-6 py-3 bg-white text-indigo-600 border border-indigo-600 rounded-full shadow-lg hover:bg-indigo-50 transition-all font-medium">
+                Booking Sekarang
+              </button>
+            </Link>
           </div>
+        </div>
+      </section>
 
-          {/* Table Section */}
-          <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-6">
-            <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">Recent Bookings</h3>
-            </div>
-            <div className="border-t border-gray-200">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Room
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      User
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Date
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  <tr>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">Room 101</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">irfan</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">2023-10-01</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        Confirmed
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">Room 102</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">Muhamad Irfan Sujono</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">2023-10-02</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                        Pending
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Charts Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Chart: Booking by Room */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-lg font-semibold text-gray-700 mb-4">Booking by Room</h2>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={bookingByRoomData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="bookings" fill="#8884d8" />
-                </BarChart>
-              </ResponsiveContainer>
+      {/* Features Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h3 className="text-3xl font-bold text-center text-gray-800 mb-12">
+            Fitur Utama Kami
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Feature 1 */}
+            <div className="bg-gradient-to-b from-indigo-50 to-purple-50 border border-indigo-100 rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center mb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 6l9-3 9 3"
+                  />
+                </svg>
+              </div>
+              <h4 className="text-lg font-semibold text-gray-800">Kelola Ruangan</h4>
+              <p className="text-gray-600 mt-2">
+                Tambah, edit, dan hapus ruangan dengan mudah melalui antarmuka yang intuitif.
+              </p>
             </div>
 
-            {/* Chart: Booking by Month */}
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-lg font-semibold text-gray-700 mb-4">Booking by Month</h2>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={bookingByMonthData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="bookings" fill="#82ca9d" />
-                </BarChart>
-              </ResponsiveContainer>
+            {/* Feature 2 */}
+            <div className="bg-gradient-to-b from-pink-50 to-rose-50 border border-pink-100 rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center mb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <h4 className="text-lg font-semibold text-gray-800">Booking Ruangan</h4>
+              <p className="text-gray-600 mt-2">
+                Pesan ruangan sesuai kebutuhan Anda dengan beberapa klik saja.
+              </p>
             </div>
 
-            {/* Chart: Booking by Year */}
-            <div className="bg-white p-6 rounded-lg shadow-md col-span-1 lg:col-span-2">
-              <h2 className="text-lg font-semibold text-gray-700 mb-4">Booking by Year</h2>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={bookingByYearData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="bookings" fill="#ffc658" />
-                </BarChart>
-              </ResponsiveContainer>
+            {/* Feature 3 */}
+            <div className="bg-gradient-to-b from-blue-50 to-cyan-50 border border-blue-100 rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+              </div>
+              <h4 className="text-lg font-semibold text-gray-800">Laporan</h4>
+              <p className="text-gray-600 mt-2">
+                Lihat laporan penggunaan ruangan secara real-time untuk analisis lebih lanjut.
+              </p>
             </div>
           </div>
         </div>
-      </main>
+      </section>
+
+      {/* Footer Section */}
+      <footer className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-white text-sm font-medium">
+            &copy; 2025 Sistem Manajemen Ruangan. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   );
-};
-
-export default Dashboard;
+}
